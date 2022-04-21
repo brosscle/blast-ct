@@ -27,7 +27,7 @@ task_predict_fn_dict = {'segmentation': predict_exclusive,
 
 
 class ModelTrainer(object):
-    def __init__(self, job_dir, device, model, criterion, lr_scheduler, hooks, task):
+    def __init__(self, job_dir, device, model, criterion, lr_scheduler, hooks, saved_model_path, task):
         assert task in task_predict_fn_dict.keys()
         self.job_dir = job_dir
         self.device = device
@@ -35,6 +35,8 @@ class ModelTrainer(object):
         self.criterion = criterion
         self.lr_scheduler = lr_scheduler
         self.hooks = hooks
+        self.saved_model_path = saved_model_path
+        self.model.load_state_dict(torch.load(self.saved_model_path, map_location=self.device))
         self.predict_fn = task_predict_fn_dict[task]
         self.logger = get_logger(job_dir)
         self.stop_signal = False
