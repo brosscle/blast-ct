@@ -13,7 +13,7 @@ import numpy as np
 import torch
 import random
 import torch.nn
-from blast_ct.trainer.model_trainer import ModelTrainer
+from blast_ct.trainer.model_trainer import ModelTrainer, ModelTrainer_tl
 from blast_ct.read_config import get_model, get_optimizer, get_loss, get_train_loader, get_valid_loader, \
     get_test_loader, get_training_hooks
 
@@ -38,7 +38,7 @@ def run_job(job_dir, train_csv_path, valid_csv_path, config_file, num_epochs, de
 
     # train the model
     print('Starting Training...')
-    train_model = ModelTrainer(job_dir, device, model, criterion, optimizer, hooks, saved_model_path, task)
+    train_model = ModelTrainer_tl(job_dir, device, model, criterion, optimizer, hooks, saved_model_path, task)
     sucess = train_model(train_loader, num_epochs)
     return sucess
 
