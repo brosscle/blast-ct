@@ -127,7 +127,7 @@ class ModelTrainer_tl(object):
         print('Filling the model weights by the blast-ct original models weights')
         for (k, v) in self.orig_model.state_dict().items():
             try:
-                print(k + ' Done')
+                #print(k + ' Done')
                 self.model.state_dict()[k].copy_(v)
             #except Exception as er:print(er), print(k)
             except: print(k + ' randomly initialized')
