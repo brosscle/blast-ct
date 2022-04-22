@@ -23,6 +23,13 @@ def run_job(job_dir, train_csv_path, valid_csv_path, config_file, num_epochs, de
         config = json.load(f)
     if not os.path.exists(job_dir):
         os.makedirs(job_dir)
+        
+    install_dir = os.path.dirname(os.path.realpath(__file__))
+    orig_config_file = os.path.join(install_dir, f'data/config.json')
+    with open(orig_config_file, 'r') as f:
+        orig_config = json.load(f)
+    orig_model = get_model(orig_config)
+    
     set_random_seed(random_seed)
     device = set_device(device)
     print('Setting up configuration...')
@@ -38,7 +45,7 @@ def run_job(job_dir, train_csv_path, valid_csv_path, config_file, num_epochs, de
 
     # train the model
     print('Starting Training...')
-    train_model = ModelTrainer_tl(job_dir, device, model, criterion, optimizer, hooks, saved_model_path, task)
+    train_model = ModelTrainer_tl(job_dir, device, model, orig_model, criterion, optimizer, hooks, saved_model_path, task)
     sucess = train_model(train_loader, num_epochs)
     return sucess
 

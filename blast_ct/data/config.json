@@ -6,7 +6,7 @@
 		}
 	},
 	"data": {
-		"class_names": ["foreground", "IPH", "EAH", "oedema", "IVH"],
+		"class_names": ["foreground", "futur_edema"],
 		"task": "segmentation",
 		"channels": ["image"],
 		"target": "target",
@@ -18,7 +18,7 @@
 			}
 		},
 		"input_channels": 1,
-		"num_classes": 5
+		"num_classes": 2
 	},
 	"training": {
 		"batch_size": 10,

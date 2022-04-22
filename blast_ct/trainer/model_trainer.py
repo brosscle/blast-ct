@@ -83,7 +83,7 @@ class ModelTrainer(object):
 
 
 class ModelTrainer_tl(object):
-    def __init__(self, job_dir, device, model, criterion, lr_scheduler, hooks, saved_model_path, task):
+    def __init__(self, job_dir, device, model, orig_model, criterion, lr_scheduler, hooks, saved_model_path, task):
         assert task in task_predict_fn_dict.keys()
         self.job_dir = job_dir
         self.device = device
@@ -92,7 +92,7 @@ class ModelTrainer_tl(object):
         self.lr_scheduler = lr_scheduler
         self.hooks = hooks
         self.saved_model_path = saved_model_path
-        self.model.load_state_dict(torch.load(self.saved_model_path, map_location=self.device))
+        self.orig_model = orig_model
         self.predict_fn = task_predict_fn_dict[task]
         self.logger = get_logger(job_dir)
         self.stop_signal = False
@@ -123,6 +123,14 @@ class ModelTrainer_tl(object):
         return
 
     def __call__(self, dataloader, num_epochs):
+        self.orig_model.load_state_dict(torch.load(self.saved_model_path, map_location=self.device))
+        print('Filling the model weights by the blast-ct original models weights')
+        for (k, v) in self.orig_model.state_dict().items():
+            try:
+                print(k + ' Done')
+                self.model.state_dict()[k].copy_(v)
+            #except Exception as er:print(er), print(k)
+            except: print(k + ' randomly initialized')
         start_training = time.time()
         self.model.to(self.device)
         [hook.attach_hook(self) for hook in self.hooks]
